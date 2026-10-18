@@ -1,0 +1,42 @@
+using UnityEngine;
+
+public class PlayerControllerScript : MonoBehaviour
+{
+    [SerializeField] private Rigidbody playerRigidbody;
+    private Vector2 movementInput;
+
+    private float movementForce = 10f;
+    private float maxSpeed = 8f;
+
+    public void ProcessMove(Vector2 WASD_input) {
+        movementInput = WASD_input;
+    }
+
+    private void FixedUpdate()
+    {
+        Vector3 moveDirection = new Vector3(
+            movementInput.x, 0f, movementInput.y
+        ).normalized;
+
+        playerRigidbody.AddForce(moveDirection * movementForce);
+
+        Vector3 horizontalVelocity = new Vector3(
+            playerRigidbody.linearVelocity.x,
+            0f,
+            playerRigidbody.linearVelocity.z
+        );
+
+        if (horizontalVelocity.magnitude > maxSpeed)
+        {
+            horizontalVelocity = horizontalVelocity.normalized * maxSpeed;
+
+            playerRigidbody.linearVelocity = new Vector3(
+                horizontalVelocity.x,
+                playerRigidbody.linearVelocity.y,
+                horizontalVelocity.z
+            );
+        }
+    }
+
+
+}
