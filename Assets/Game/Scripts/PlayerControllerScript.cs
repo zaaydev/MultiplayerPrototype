@@ -3,14 +3,34 @@ using UnityEngine;
 public class PlayerControllerScript : MonoBehaviour
 {
     [SerializeField] private Rigidbody playerRigidbody;
-    private Vector2 movementInput;
+    [SerializeField] private float movementForce = 10f;
+    [SerializeField] private float maxSpeed = 8f;
+    
+    [SerializeField] private bool isGrounded = true;
+    [SerializeField] private float jumpForce = 7f;
 
-    private float movementForce = 10f;
-    private float maxSpeed = 8f;
+    private Vector2 movementInput;
 
     public void ProcessMove(Vector2 WASD_input) {
         movementInput = WASD_input;
     }
+
+    public void ProcessJump()
+    {
+        if (!isGrounded) return;
+
+        playerRigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        isGrounded = false;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
+        }
+    }
+
 
     private void FixedUpdate()
     {
