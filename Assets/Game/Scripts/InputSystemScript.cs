@@ -11,6 +11,7 @@ public class InputSystemScript : MonoBehaviour
         playerActions = new PlayerInputActions();   
         playerActions.PlayerMap.Enable();     
         playerActions.PlayerMap.Jump.performed += TriggerProcessJump;     
+        playerActions.PlayerMap.Dash.performed += TriggerProcessDash;     
     }
 
     private void Update()
@@ -22,10 +23,14 @@ public class InputSystemScript : MonoBehaviour
     private void TriggerProcessJump(InputAction.CallbackContext ctx) {
         controllerScript.ProcessJump();
     }
+    private void TriggerProcessDash(InputAction.CallbackContext ctx) {
+        controllerScript.ProcessDash();
+    }
 
     private void OnDisable()
     {
         playerActions.PlayerMap.Jump.performed -= TriggerProcessJump;
+        playerActions.PlayerMap.Dash.performed -= TriggerProcessDash;     
         playerActions.PlayerMap.Disable();
     }
 }
