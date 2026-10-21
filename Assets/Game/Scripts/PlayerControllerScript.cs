@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerControllerScript : MonoBehaviour
 {
@@ -11,11 +12,14 @@ public class PlayerControllerScript : MonoBehaviour
     [SerializeField] private float jumpForce = 7f;
 
     [SerializeField] private float dashForce = 20f;
-    [SerializeField] private float maxDashingForce = 20f;
     [SerializeField] private float dashCooldown = 1f;
+    [SerializeField] private float dashingDuration = 0.3f;
+
+    // afterimage
+    [SerializeField] private GameObject afterimagePrefab;
+
     private bool isDashing = false;
     private float nextDashTime;
-    private float dashingDuration = 0.3f;
 
 
     public void ProcessMove(Vector2 WASD_input) {
@@ -38,7 +42,10 @@ public class PlayerControllerScript : MonoBehaviour
     }
 
     public void ProcessDash() {
+        if (movementInput == Vector2.zero) return;
         if (Time.time < nextDashTime) return;
+
+        StartCoroutine(SpawnAfterimages());
 
         // find dashing direction
         Vector3 dashDirection = new Vector3(movementInput.x, 0, movementInput.y);
@@ -54,6 +61,19 @@ public class PlayerControllerScript : MonoBehaviour
     private void StopDashingDuration()
     {
         isDashing = false;
+    }
+    private IEnumerator SpawnAfterimages()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            Instantiate(
+                afterimagePrefab,
+                transform.position,
+                transform.rotation
+            );
+
+            yield return new WaitForSeconds(0.06f);
+        }
     }
 
 
@@ -71,7 +91,9 @@ public class PlayerControllerScript : MonoBehaviour
             playerRigidbody.linearVelocity.z
         );
 
-        float allowedMaxSpeed = isDashing ? maxDashingForce : maxSpeed;  
+        float maxDashingSpeed = dashForce;
+        float allowedMaxSpeed = isDashing ? maxDashingSpeed : maxSpeed;  
+        
         if (horizontalVelocity.magnitude > allowedMaxSpeed)
         {
             horizontalVelocity = horizontalVelocity.normalized * allowedMaxSpeed;
