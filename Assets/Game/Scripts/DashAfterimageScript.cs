@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class DashAfterimageScript : MonoBehaviour
 {
-    private float fadeDuration = 6f;
+    private float fadeDuration = 0.6f;
 
     private Renderer ballRenderer;
     private Material fadeMaterial;
