@@ -5,6 +5,8 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
 {
     [SerializeField] private NetworkObject playerGreenPrefab;
     [SerializeField] private NetworkObject playerRedPrefab;
+    [SerializeField] private Transform greenSpawnPoint;
+    [SerializeField] private Transform redSpawnPoint;
 
     private bool isRegistered;
 
@@ -55,15 +57,30 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
         if (playerSlot == 0)
         {
             selectedPrefab = playerGreenPrefab;
-            spawnPosition = new Vector3(-2f, 1f, 0f);
+            spawnPosition = greenSpawnPoint.position;
         }
         else
         {
             selectedPrefab = playerRedPrefab;
-            spawnPosition = new Vector3(2f, 1f, 0f);
+            spawnPosition = redSpawnPoint.position;
         }
 
-        Runner.Spawn(selectedPrefab, spawnPosition, Quaternion.identity);
+        NetworkObject spawnedPlayer = Runner.Spawn(
+            selectedPrefab,
+            spawnPosition,
+            Quaternion.identity
+        );
+
+        if (spawnedPlayer.HasStateAuthority)
+        {
+            CameraFollowScript cameraFollow =
+                Camera.main.GetComponent<CameraFollowScript>();
+
+            if (cameraFollow != null)
+            {
+                cameraFollow.SetTarget(spawnedPlayer.transform);
+            }
+        }
 
         Debug.Log("Local player spawned.");
     }

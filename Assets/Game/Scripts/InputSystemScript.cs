@@ -27,8 +27,27 @@ public class InputSystemScript : NetworkBehaviour
     {
         if (playerActions == null || controllerScript == null) return;
 
-        Vector2 WASD_input = playerActions.PlayerMap.MoveAction.ReadValue<Vector2>();
-        controllerScript.ProcessMove(WASD_input);
+        Vector2 input = playerActions.PlayerMap.MoveAction.ReadValue<Vector2>();
+
+        Transform cam = Camera.main.transform;
+
+        Vector3 cameraForward = cam.forward;
+        Vector3 cameraRight = cam.right;
+
+        // Keep movement on the ground plane.
+        cameraForward.y = 0f;
+        cameraRight.y = 0f;
+
+        cameraForward.Normalize();
+        cameraRight.Normalize();
+
+        Vector3 moveDirection =
+            cameraForward * input.y +
+            cameraRight * input.x;
+
+        controllerScript.ProcessMove(
+            new Vector2(moveDirection.x, moveDirection.z)
+        );
     }
 
     private void TriggerProcessJump(InputAction.CallbackContext ctx)

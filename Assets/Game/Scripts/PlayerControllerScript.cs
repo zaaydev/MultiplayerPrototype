@@ -1,28 +1,34 @@
 using UnityEngine;
 using System.Collections;
+using Fusion;
+using UnityEngine.SceneManagement;
 
-public class PlayerControllerScript : MonoBehaviour
+public class PlayerControllerScript : NetworkBehaviour
 {
     [SerializeField] private Rigidbody playerRigidbody;
     [SerializeField] private float movementForce = 10f;
     [SerializeField] private float maxSpeed = 8f;
     private Vector2 movementInput;
-    
+
     [SerializeField] private bool isGrounded = true;
-    [SerializeField] private float jumpForce = 7f;
+    [SerializeField] private float jumpForce = 10f;
 
     [SerializeField] private float dashForce = 20f;
     [SerializeField] private float dashCooldown = 1f;
     [SerializeField] private float dashingDuration = 0.3f;
-
+    [SerializeField] private GameObject resultPanel;
+    [SerializeField] private TMPro.TMP_Text resultText;
     // afterimage
     [SerializeField] private GameObject afterimagePrefab;
+    private Vector3 spawnPosition;
+    private Canvas resultCanvas;
 
     private bool isDashing = false;
     private float nextDashTime;
 
 
-    public void ProcessMove(Vector2 WASD_input) {
+    public void ProcessMove(Vector2 WASD_input)
+    {
         movementInput = WASD_input;
     }
 
@@ -41,7 +47,8 @@ public class PlayerControllerScript : MonoBehaviour
         }
     }
 
-    public void ProcessDash() {
+    public void ProcessDash()
+    {
         if (movementInput == Vector2.zero) return;
         if (Time.time < nextDashTime) return;
 
@@ -56,7 +63,7 @@ public class PlayerControllerScript : MonoBehaviour
         isDashing = true;
         Invoke(nameof(StopDashingDuration), dashingDuration);
 
-        nextDashTime = Time.time + dashCooldown;        
+        nextDashTime = Time.time + dashCooldown;
     }
     private void StopDashingDuration()
     {
@@ -76,6 +83,25 @@ public class PlayerControllerScript : MonoBehaviour
         }
     }
 
+    public override void Spawned()
+    {
+        spawnPosition = transform.position;
+    }
+
+    private void Update()
+    {
+        if (!Object.HasStateAuthority) return;
+
+        if (transform.position.y < -2f)
+        {
+            // Stop the ball's movement
+            playerRigidbody.linearVelocity = Vector3.zero;
+            playerRigidbody.angularVelocity = Vector3.zero;
+
+            // Respawn at the original position
+            playerRigidbody.position = spawnPosition;
+        }
+    }
 
     private void FixedUpdate()
     {
@@ -92,8 +118,8 @@ public class PlayerControllerScript : MonoBehaviour
         );
 
         float maxDashingSpeed = dashForce;
-        float allowedMaxSpeed = isDashing ? maxDashingSpeed : maxSpeed;  
-        
+        float allowedMaxSpeed = isDashing ? maxDashingSpeed : maxSpeed;
+
         if (horizontalVelocity.magnitude > allowedMaxSpeed)
         {
             horizontalVelocity = horizontalVelocity.normalized * allowedMaxSpeed;

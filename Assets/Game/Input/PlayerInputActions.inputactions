@@ -95,6 +95,17 @@
                 },
                 {
                     "name": "",
+                    "id": "23132123-18df-4583-bda4-ed4dea2c03df",
+                    "path": "<Gamepad>/dpad",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MoveAction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "6248f7e1-daff-47fd-a701-916cf43ee503",
                     "path": "<Keyboard>/space",
                     "interactions": "",
@@ -106,8 +117,30 @@
                 },
                 {
                     "name": "",
+                    "id": "82ddcd64-b5b1-4996-a53e-a5dd0bd04345",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "80c6d6b8-e4be-4efd-8921-5be54298eb1a",
                     "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6b9f8de4-5285-4ca5-9531-9cccc549a21c",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
